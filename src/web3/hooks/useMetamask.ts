@@ -17,5 +17,12 @@ export function useMetamask() {
     return signature;
   }
 
-  return { connectMetamask, disconnectMetamask, hooks, metamask, signMessage };
+  async function getBalance(account: string): Promise<string> {
+    const balance: string = await metamask.provider?.request({ method: 'eth_getBalance', params: [account] }) as string;
+    return balance;
+  }
+
+  
+  
+  return { connectMetamask, disconnectMetamask, hooks, metamask, signMessage, getBalance };
 }

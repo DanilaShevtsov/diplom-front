@@ -1,11 +1,70 @@
-/* .app-flex-containter {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: stretch;   
+body {
+    margin: 0;
 }
 
-.app-sidebar {
-    background-color: red;
-    flex-basis: 20%;
-} */
+.app {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex-grow: 1;
+}
+.workspace {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.sider {
+    display: flex;
+    color: white;
+    flex-direction: column;
+    flex-basis: 15%;
+    padding: 10px;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    flex-basis: 5%;
+    padding: 0;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-basis: 15%;
+    background: #001529;
+    color: white;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    justify-content: space-around;
+    margin-left: 14%;
+    margin-right: 14%;
+    align-self: stretch;
+}
+
+.project {
+    margin-bottom: 10px;
+    display: flex;
+    border-color: red;
+    border-style: solid;
+    border-width: 1px;
+    flex-basis: 100%;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    background-color: white;
+}
