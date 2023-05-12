@@ -9,7 +9,6 @@ export function useAccountBalance(account: string) {
   
   async function getUserBalance() {
     const balance = await getBalance(account);
-    console.log(balance);
     setBalance(balance);
   }
 

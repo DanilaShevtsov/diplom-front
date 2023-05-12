@@ -1,8 +1,12 @@
 import { Layout, Button, Menu } from 'antd';
 import type { MenuProps } from 'antd';
-import { useMetamask } from '../../web3/hooks/useMetamask';
+import { useMetamask } from '../../hooks/useMetamask';
 import { useEffect, useState } from 'react';
-import { useAccountBalance } from '../../web3/hooks/useAccountBalance';
+import { useAccountBalance } from '../../hooks/useAccountBalance';
+import actions  from '../../redux/auth/actions';
+import { connect } from 'react-redux';
+import { AuthJWT } from '../../interfaces/auth';
+import { auth } from '../../lib/auth'
 
 const { Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -28,41 +32,62 @@ function sliceAddress(address: string) {
 }
 
 const sideBarMenuItems: MenuItem[] = [
-    getItem('Top projects', 'top-projects'),
+    getItem('Main page', 'main-page'),
     getItem('All projects', 'all-projects'),
     getItem('Beneficiar cabinet', 'beneficiar-cabinet'),
   ]
 
-export function Sidebar() {
+function Sidebar(props: any) {
+  const {
+    authSuccess,
+  } = props
 
-  const { hooks, metamask, connectMetamask } = useMetamask();
+  const { hooks, metamask, connectMetamask, signMessage } = useMetamask();
+  const { getWelcomeToken, login, verifyLogin } = auth();
   const { useAccount, useIsActive, useIsActivating } = hooks;
 
-  const [isAccountConnected, setIsAccountConnected] = useState(false);
-  
   const userAccount: string = useAccount() as string || '0x0000000000000000000000000000000000000000';
   const userBalance: string = useAccountBalance(userAccount) || '0';
-  
   const isActive: boolean = useIsActive();
   const isActivating: boolean = useIsActivating();
 
-  function connect() {
+  async function connect() {
     connectMetamask();
-    setIsAccountConnected(true);
   }
+
+  async function web2Auth() {
+    const message:string = await getWelcomeToken(userAccount);
+    const signature: string = await signMessage(message, userAccount);
+    const jwt: AuthJWT = await login(message, userAccount, signature);
+    const authorized: boolean = await verifyLogin(jwt);
+
+    authSuccess({ token: jwt.token, address: userAccount });
+    
+    if (!authorized) {
+      console.log('something went wrong');
+    }
+  }
+
+  useEffect(()=> {
+    if(userAccount != null && userAccount != '0x0000000000000000000000000000000000000000') {
+      console.log('addressEffect', userAccount);
+      web2Auth();
+    }
+  }, [userAccount])
 
   useEffect(() => {
     if (!isActive && !isActivating) {
-        metamask.connectEagerly();
+      metamask.connectEagerly();
     }
-  })
+    
+  }, [isActive, isActivating]);
 
   return (
       <Sider
         className='sider'
         width='none'  
       >
-        {!isAccountConnected &&
+        {!userAccount &&
           <Button
             type='primary'
             block={true}
@@ -72,7 +97,7 @@ export function Sidebar() {
           </Button>
         }
 
-        {isAccountConnected && 
+        {userAccount && 
           <div>
             <p>{sliceAddress(userAccount)}</p>
             <p>Balance: {userBalance}ETH</p>
@@ -81,8 +106,16 @@ export function Sidebar() {
         <Menu
           theme='dark'
           items={sideBarMenuItems}
-          defaultSelectedKeys={['top-projects']}
+          defaultSelectedKeys={['main-page']}
         />
       </Sider>
   );
 }
+
+const mapStateToProps = ({
+  auth
+}: any) => ({
+  ...auth,
+})
+
+export default connect(mapStateToProps, actions)(Sidebar)

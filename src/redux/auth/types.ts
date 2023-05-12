@@ -1,0 +1,7 @@
+const AUTH_SUCCESS = 'auth/AUTH_SUCCESS';
+const REMOVE_TOKEN = 'auth/REMOVE_TOKEN';
+
+export {
+  AUTH_SUCCESS,
+  REMOVE_TOKEN,
+};
