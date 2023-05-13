@@ -1,6 +1,7 @@
 import {
   AUTH_SUCCESS,
   REMOVE_TOKEN,
+  LOAD_AUTH,
 } from '../types';
 
 const authSuccess = (payload: any) => (dispatch: any) => {
@@ -16,7 +17,14 @@ const removeToken = () => async (dispatch: any) => {
   });
 };
 
+const loadAuthStorage = () => (dispatch: any) => {
+  dispatch({
+    type: LOAD_AUTH,
+  });
+};
+
 export default {
   authSuccess,
   removeToken,
+  loadAuthStorage,
 };

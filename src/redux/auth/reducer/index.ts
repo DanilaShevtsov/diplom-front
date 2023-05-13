@@ -1,11 +1,13 @@
 import {
   AUTH_SUCCESS,
   REMOVE_TOKEN,
+  LOAD_AUTH,
 } from '../types';
 
 const STATE = {
   token: null,
   address: null,
+  
 };
 
 const auth = (state = STATE, { type, payload }: { type: string, payload: any }) => {
@@ -21,8 +23,8 @@ const auth = (state = STATE, { type, payload }: { type: string, payload: any }) 
 
       return {
         ...state,
-        token,
-        address,
+        token: token,
+        address: address,
       };
     }
 
@@ -33,6 +35,14 @@ const auth = (state = STATE, { type, payload }: { type: string, payload: any }) 
       return {
         ...STATE,
       };
+    }
+
+    case LOAD_AUTH: {
+      return {
+        ...state,
+        token: localStorage.getItem('token'),
+        address: localStorage.getItem('address'),
+      }
     }
 
     default:

@@ -8,6 +8,7 @@ body {
     flex-basis: 100%;
     flex-grow: 1;
 }
+
 .workspace {
     display: flex;
     justify-content: flex-start;
@@ -19,6 +20,7 @@ body {
     flex-direction: column;
     flex-basis: 15%;
     padding: 10px;
+    min-width: 210px !important
 }
 
 .header {
@@ -35,6 +37,7 @@ body {
     flex-basis: 15%;
     background: #001529;
     color: white;
+    min-width: 210px !important
 }
 
 .title {
@@ -42,24 +45,15 @@ body {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
+    margin-bottom: 1%;
 }
 
 .content {
     display: flex;
-    flex-direction: column;
     padding: 10px;
     justify-content: space-around;
     margin-left: 14%;
     margin-right: 14%;
-    align-self: stretch;
-}
-
-.project {
-    margin-bottom: 10px;
-    display: flex;
-    border-color: red;
-    border-style: solid;
-    border-width: 1px;
     flex-basis: 100%;
 }
 

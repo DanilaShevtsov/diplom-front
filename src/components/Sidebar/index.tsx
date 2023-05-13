@@ -3,10 +3,10 @@ import type { MenuProps } from 'antd';
 import { useMetamask } from '../../hooks/useMetamask';
 import { useEffect, useState } from 'react';
 import { useAccountBalance } from '../../hooks/useAccountBalance';
-import actions  from '../../redux/auth/actions';
 import { connect } from 'react-redux';
 import { AuthJWT } from '../../interfaces/auth';
 import { auth } from '../../lib/auth'
+import actions  from '../../redux/auth/actions';
 
 const { Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -32,14 +32,16 @@ function sliceAddress(address: string) {
 }
 
 const sideBarMenuItems: MenuItem[] = [
-    getItem('Main page', 'main-page'),
-    getItem('All projects', 'all-projects'),
-    getItem('Beneficiar cabinet', 'beneficiar-cabinet'),
-  ]
+  getItem('Main page', 'main-page'),
+  getItem('All projects', 'all-projects'),
+  getItem('Beneficiar cabinet', 'beneficiar-cabinet'),
+]
 
 function Sidebar(props: any) {
   const {
     authSuccess,
+    token,
+    address
   } = props
 
   const { hooks, metamask, connectMetamask, signMessage } = useMetamask();
@@ -47,7 +49,7 @@ function Sidebar(props: any) {
   const { useAccount, useIsActive, useIsActivating } = hooks;
 
   const userAccount: string = useAccount() as string || '0x0000000000000000000000000000000000000000';
-  const userBalance: string = useAccountBalance(userAccount) || '0';
+  const userBalance: number = useAccountBalance(userAccount) || 0;
   const isActive: boolean = useIsActive();
   const isActivating: boolean = useIsActivating();
 
@@ -69,8 +71,12 @@ function Sidebar(props: any) {
   }
 
   useEffect(()=> {
-    if(userAccount != null && userAccount != '0x0000000000000000000000000000000000000000') {
-      console.log('addressEffect', userAccount);
+    if (
+        userAccount != '0x0000000000000000000000000000000000000000' && (
+        userAccount != address ||
+        token == null
+      )
+    ) {
       web2Auth();
     }
   }, [userAccount])
@@ -100,7 +106,7 @@ function Sidebar(props: any) {
         {userAccount && 
           <div>
             <p>{sliceAddress(userAccount)}</p>
-            <p>Balance: {userBalance}ETH</p>
+            <p>Balance: {userBalance} ETH</p>
           </div>
         }
         <Menu
