@@ -3,10 +3,11 @@ import { Layout, theme } from 'antd';
 
 import Sidebar from '../Sidebar';
 import TopProjects from '../TopProjects';
+import AllProjects from '../AllProjects';
+
 import { connect } from 'react-redux';
 import authActions from '../../redux/auth/actions';
 import companiesActions from '../../redux/companies/actions';
-import { companiesLib } from '../../lib/companies';
 import { Pages } from '../../enums/pages.enum'
 
 import './index.css';
@@ -20,29 +21,18 @@ const App: React.FC = (props: any) => {
 
   const [page, setPage] = useState('');
 
-  const { getCompanies } = companiesLib();
+  function changeMenu(page: Pages) {
+    setPage(page);
+  }
 
   const {
-    auth,
-    updateStateCompanies,
     loadAuthStorage
   } = props
-
-  async function fetchCompanies() {
-    const requestedCompanies = await getCompanies(auth.token);
-    updateStateCompanies(requestedCompanies.data);
-  }
 
   useEffect(() => {
     loadAuthStorage();
     setPage(Pages.MAIN)
   }, [])
-
-  // useEffect(() => {
-  //   if (auth.token != null) {
-  //     fetchCompanies();
-  //   }
-  // }, [auth.token])
 
   return (
     <div className='app'>
@@ -53,14 +43,15 @@ const App: React.FC = (props: any) => {
         <div className='title'>PROJECT NAME</div>
       </Header>
       <Layout className='workspace'>
-        <Sidebar/>
+        <Sidebar onChangeMenu={changeMenu} />
         <Layout>
           <Content className='content'> 
           { page === Pages.MAIN &&
             <TopProjects/>
           }
+          { page === Pages.ALL_PROJECTS && <AllProjects/>}
           </Content>
-          <Footer className='footer'> Footer is exist. Just trust me! </Footer>
+          <Footer className='footer'> Footer exists. Just trust me!</Footer>
         </Layout>
       </Layout>
     </div>

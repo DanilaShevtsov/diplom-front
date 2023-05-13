@@ -7,7 +7,7 @@ export function companiesLib() {
     baseURL: process.env.REACT_APP_API_URL,
   });
 
-  async function getCompanies(token: string): Promise<Companies> {
+  async function getAllCompanies(token: string): Promise<Companies> {
     const config: AxiosRequestConfig = {
       method: 'post',
       url: Routes.GET_COMPANIES,
@@ -16,10 +16,28 @@ export function companiesLib() {
       }
     }
 
-    const response: Companies = await axiosInstance.request(config);
-    return response;
+    
+    const response = await axiosInstance.request(config);
+    return response.data;
   }
 
-  return { getCompanies }
+  async function getPaginatedCompanies(token: string, page: number, size: number = 3): Promise<Companies> {
+    const config: AxiosRequestConfig = {
+      method: 'post',
+      url: Routes.GET_COMPANIES + `?page=${page}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        limit: size,
+        page: page,
+      }
+    }
+
+    const response = await axiosInstance.request(config);
+    return response.data;
+  }
+  
+  return { getAllCompanies, getPaginatedCompanies }
 }
 

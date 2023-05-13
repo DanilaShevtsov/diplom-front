@@ -1,9 +1,7 @@
 import { CompanyData } from './companyData';
 
 export interface Companies {
-  data: {
-    data: [CompanyData]
-  },
+  data: [CompanyData],
   meta: {
     itemsPerPage: number;
     totalItems: number;

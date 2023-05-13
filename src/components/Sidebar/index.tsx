@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { AuthJWT } from '../../interfaces/auth';
 import { auth } from '../../lib/auth'
 import actions  from '../../redux/auth/actions';
+import { Pages } from '../../enums/pages.enum';
 
 const { Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -32,18 +33,22 @@ function sliceAddress(address: string) {
 }
 
 const sideBarMenuItems: MenuItem[] = [
-  getItem('Main page', 'main-page'),
-  getItem('All projects', 'all-projects'),
-  getItem('Beneficiar cabinet', 'beneficiar-cabinet'),
-]
+  getItem('Main page', Pages.MAIN),
+  getItem('All projects', Pages.ALL_PROJECTS),
+  getItem('Beneficiar cabinet', Pages.BENEFICIAR_CABINET, null, [
+    getItem('Create Company', Pages.CREATE_COMPANY),
+    getItem('My Companies', Pages.MY_COMPANIES)
+  ]),
+  { type: 'divider'} 
+];
 
 function Sidebar(props: any) {
   const {
     authSuccess,
     token,
-    address
+    address,
+    onChangeMenu
   } = props
-
   const { hooks, metamask, connectMetamask, signMessage } = useMetamask();
   const { getWelcomeToken, login, verifyLogin } = auth();
   const { useAccount, useIsActive, useIsActivating } = hooks;
@@ -112,16 +117,17 @@ function Sidebar(props: any) {
         <Menu
           theme='dark'
           items={sideBarMenuItems}
-          defaultSelectedKeys={['main-page']}
+          defaultSelectedKeys={[Pages.MAIN]}
+          onClick={({ key }) => {
+            onChangeMenu(key);
+          }}
         />
       </Sider>
   );
 }
 
-const mapStateToProps = ({
-  auth
-}: any) => ({
-  ...auth,
-})
+function mapStateToProps(state: any) {
+  return { onChangepage: (setPage: string) => state, ...auth }
+}
 
 export default connect(mapStateToProps, actions)(Sidebar)
